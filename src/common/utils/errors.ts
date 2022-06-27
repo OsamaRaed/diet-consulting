@@ -21,11 +21,6 @@ export const UserAlreadyExists = new HttpException(
     HttpStatus.CONFLICT,
 );
 
-export const TaskNotFound = new HttpException(
-    EXCEPTIONS.TASK_NOT_FOUND,
-    HttpStatus.NOT_FOUND,
-);
-
 export const InvalidCredentials = new HttpException(
     EXCEPTIONS.INVALID_CREDENTIALS,
     HttpStatus.UNAUTHORIZED,

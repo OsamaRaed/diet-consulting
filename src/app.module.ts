@@ -5,11 +5,15 @@ import {DatabaseModule} from "./Modules/database/database.module";
 import {UserModule} from "./Modules/user/user.module";
 import {ConfigModule} from "@nestjs/config";
 import configFile from '../config';
+import {QuestionModule} from "./Modules/question/question.module";
+import {AnswerModule} from "./Modules/answer/answer.module";
 
 @Module({
     imports: [
         DatabaseModule,
         UserModule,
+        QuestionModule,
+        AnswerModule,
         ConfigModule.forRoot({
             load: [configFile],
             isGlobal: true,

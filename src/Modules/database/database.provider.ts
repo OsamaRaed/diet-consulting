@@ -3,6 +3,8 @@ import {Sequelize} from 'sequelize-typescript';
 import {User} from '../user/user.model';
 import {DATABASE_CONFIG} from 'src/common/constants';
 import {PROVIDERS} from '../../common/enums/providers';
+import {Question} from "../question/question.model";
+import {Answer} from "../answer/answer.model";
 
 export const databaseProviders = [
     {
@@ -14,7 +16,7 @@ export const databaseProviders = [
                     timestamps: false
                 },
             });
-            await sequelize.addModels([User]);
+            await sequelize.addModels([User, Question, Answer]);
             return sequelize;
         },
         inject: [ConfigService],

@@ -20,16 +20,19 @@ export class AuthGuard implements CanActivate {
     }
     
     private async validateRequest(request: any): Promise<boolean> {
+
         let token = request.headers.authorization;
         if (!token) return false;
+
         token = token.split(" ")[1];
+
         try {
             const data: any = verify(
                 token,
                 this.configService.get('jwt').secret
             );
-            const test = await this.userService.findOne(data.email);
-            request.body.user = test.toJSON();
+            const test = await this.userService.findById(data);
+            request.user = test.toJSON();
             return true;
         } catch {
             return false;

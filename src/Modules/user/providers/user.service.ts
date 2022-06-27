@@ -9,7 +9,7 @@ import {LoginDto} from "../dto/login.dto";
 import {SignUpDto} from "../dto/sign-up.dto";
 import {PROVIDERS} from "../../../common/enums/providers";
 import {Op} from "sequelize";
-import {InvalidCredentials, UserAlreadyExists} from "../../../common/utils/errors";
+import {InvalidCredentials, UserAlreadyExists, UserNotFound} from "../../../common/utils/errors";
 import {ROLES} from "../../../common/enums/roles";
 import {MESSAGES} from "../../../common/enums/messages";
 import {ConfigService} from "@nestjs/config";
@@ -68,10 +68,19 @@ export class UserService {
         };
     }
 
+    async findById(id: number): Promise<User> {
+        const user = await this.userModel.findOne({ where: { id: id } });
+        if(!user) {
+            throw UserNotFound;
+        }
+        return user;
+    }
+
     private comparePassword = (
         password: string,
         hash: string,
     ): Promise<boolean> => {
         return compare(password, hash);
+
     };
 }
