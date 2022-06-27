@@ -1,15 +1,15 @@
 import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { verify } from "jsonwebtoken";
-
-import { UsersService } from "../../users/users.service";
-
-import * as dotenv from "dotenv";
-dotenv.config();
+import {UserService} from "../../Modules/user/providers/user.service";
+import {ConfigService} from "@nestjs/config";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private userService: UsersService) {
+    constructor(
+        private readonly userService: UserService,
+        private readonly configService: ConfigService
+    ) {
     }
     
     canActivate(
@@ -26,7 +26,7 @@ export class AuthGuard implements CanActivate {
         try {
             const data: any = verify(
                 token,
-                process.env.JWT_SECRET
+                this.configService.get('jwt').secret
             );
             const test = await this.userService.findOne(data.email);
             request.body.user = test.toJSON();
