@@ -1,0 +1,96 @@
+type User {
+  id: ID!
+  userName: String!
+  email: String!
+  firstName: String!
+  middleName: String
+  lastName: String!
+  password: String!
+  role: String!
+#  createdAt: DateTime
+#  updatedAt: DateTime
+}
+
+type Question {
+    id: ID!
+    title: String!
+    description: String!
+    user: User!
+    answers: [Answer!]
+#    createdAt: DateTime
+#    updatedAt: DateTime
+}
+
+type Answer {
+    id: ID!
+    title: String!
+    description: String!
+    recommendations: String!
+    user: User!
+    question: Question!
+#    createdAt: DateTime
+#    updatedAt: DateTime
+
+}
+
+type QuestionPayload {
+    question: Question
+    error: String
+}
+
+type AnswerPayload {
+    answer: Answer
+    error: String
+}
+
+type QuestionsPayload {
+    questions: [Question]
+    error: String
+}
+
+type AnswersPayload {
+    answers: [Answer]
+    error: String
+}
+
+input QuestionInput {
+    title: String!
+    description: String!
+}
+
+input AnswerInput {
+    title: String!
+    description: String!
+    recommendations: String!
+    questionId: ID!
+}
+
+input QuestionUpdateInput {
+    title: String
+    description: String
+}
+
+input AnswerUpdateInput {
+    title: String
+    description: String
+    recommendations: String
+}
+
+type QuestionMutations {
+    createQuestion(question: QuestionInput!): QuestionPayload
+    updateQuestion(id: ID!, question: QuestionUpdateInput!): QuestionPayload
+    deleteQuestion(id: ID!): QuestionPayload
+}
+
+type AnswerMutations {
+    createAnswer(answer: AnswerInput!): AnswerPayload
+    updateAnswer(id: ID!, answer: AnswerUpdateInput!): AnswerPayload
+    SubmitAnswer(id: ID!): AnswerPayload
+    deleteAnswer(id: ID!): AnswerPayload
+}
+
+type Query {
+    getQuestions: QuestionsPayload
+    getQuestion(id: ID!): QuestionPayload
+    getAnswer(id: ID!): AnswerPayload
+}

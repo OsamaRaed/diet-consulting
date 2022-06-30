@@ -76,6 +76,10 @@ export class UserService {
         return user;
     }
 
+    async createUser(user: User): Promise<User> {
+        return await this.userModel.create({...user});
+    }
+
     private comparePassword = (
         password: string,
         hash: string,

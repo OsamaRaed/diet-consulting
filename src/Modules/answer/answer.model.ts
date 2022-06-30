@@ -1,4 +1,4 @@
-import {Column, ForeignKey, Model, Table} from "sequelize-typescript";
+import {BelongsTo, Column, ForeignKey, Model, Table} from "sequelize-typescript";
 import {User} from "../user/user.model";
 import {Question} from "../question/question.model";
 
@@ -28,4 +28,12 @@ export class Answer extends Model {
     @Column
     @ForeignKey(() => Question)
     questionId: number;
+
+
+    @BelongsTo(() => Question)
+    question: Question;
+
+
+    @BelongsTo(() => User)
+    user: User;
 }
