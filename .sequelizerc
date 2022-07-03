@@ -5,4 +5,5 @@ const path = require('path');
 module.exports = {
     'config': path.resolve('db', 'config.ts'),
     'migrations-path': path.resolve('db', 'migrations'),
+    'seeders-path': path.resolve('db', 'seeds'),
 };

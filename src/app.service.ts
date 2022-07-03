@@ -1,7 +1,7 @@
 import {Injectable} from '@nestjs/common';
 import {faker} from '@faker-js/faker';
-import {UserService} from "./Modules/user/providers/user.service";
-import {QuestionService} from "./Modules/question/providers/question.service";
+import {UserService} from "./modules/user/user.service";
+import {QuestionService} from "./modules/question/question.service";
 
 @Injectable()
 export class AppService {

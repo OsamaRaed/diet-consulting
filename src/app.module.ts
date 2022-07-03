@@ -1,12 +1,12 @@
 import {Module} from '@nestjs/common';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
-import {DatabaseModule} from "./Modules/database/database.module";
-import {UserModule} from "./Modules/user/user.module";
+import {DatabaseModule} from "./modules/database/database.module";
+import {UserModule} from "./modules/user/user.module";
 import {ConfigModule} from "@nestjs/config";
 import configFile from '../config';
-import {QuestionModule} from "./Modules/question/question.module";
-import {AnswerModule} from "./Modules/answer/answer.module";
+import {QuestionModule} from "./modules/question/question.module";
+import {AnswerModule} from "./modules/answer/answer.module";
 
 @Module({
     imports: [

@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { verify } from "jsonwebtoken";
-import {UserService} from "../../Modules/user/providers/user.service";
+import {UserService} from "../../modules/user/user.service";
 import {ConfigService} from "@nestjs/config";
 import {Reflector} from "@nestjs/core";
 
