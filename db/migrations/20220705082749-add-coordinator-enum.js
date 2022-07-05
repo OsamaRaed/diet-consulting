@@ -9,7 +9,7 @@ module.exports = {
           Example:
           return queryInterface.createTable('users', { id: Sequelize.INTEGER });
         */
-        return queryInterface.changeColumn('User', 'role', {
+        return queryInterface.changeColumn('Users', 'role', {
             type: Sequelize.ENUM('patient', 'consultant', 'coordinator'),
             allowNull: false,
         });
@@ -23,7 +23,7 @@ module.exports = {
           Example:
           return queryInterface.dropTable('users');
         */
-        return queryInterface.changeColumn('User', 'role', {
+        return queryInterface.changeColumn('Users', 'role', {
             type: Sequelize.ENUM('patient', 'consultant'),
             allowNull: false,
         });

@@ -8,7 +8,7 @@ module.exports = {
          * Example:
          * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
          */
-        await queryInterface.createTable('Question', {
+        await queryInterface.createTable('Questions', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
@@ -26,7 +26,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 references: {
-                    model: 'User',
+                    model: 'Users',
                     key: 'id',
                 },
             },
@@ -46,7 +46,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: true,
                 references: {
-                    model: 'User',
+                    model: 'Users',
                     key: 'id',
                 }
             },
@@ -54,7 +54,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: true,
                 references: {
-                    model: 'User',
+                    model: 'Users',
                     key: 'id',
                 }
             },
@@ -62,7 +62,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: true,
                 references: {
-                    model: 'User',
+                    model: 'Users',
                     key: 'id',
                 }
             }
@@ -76,6 +76,6 @@ module.exports = {
          * Example:
          * await queryInterface.dropTable('users');
          */
-        await queryInterface.dropTable('Question');
+        await queryInterface.dropTable('Questions');
     }
 };
