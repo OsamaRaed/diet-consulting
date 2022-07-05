@@ -1,26 +1,19 @@
-import {IsEmail, IsNotEmpty, IsOptional, IsString} from 'class-validator';
-import {Transform, TransformFnParams} from "class-transformer";
+import {IsNotEmpty, IsString} from 'class-validator';
+import {Transform} from "class-transformer";
 import {ApiProperty} from "@nestjs/swagger";
+import {trimmer} from "../../../common/utils";
 
 export class LoginDto {
-    @IsEmail()
-    @IsOptional()
+
     @ApiProperty()
-    @Transform(({ value }: TransformFnParams) =>
-        typeof value === 'string' ? value.trim() : value,
-    )
+    @Transform(trimmer)
     @IsNotEmpty()
     @IsString()
-    @ApiProperty()
+    usernameOrEmail: string;
 
-    email?: string;
 
-    @IsOptional()
-    @IsString()
-    @ApiProperty()
 
-    userName?: string
-
+    @Transform(trimmer)
     @ApiProperty()
     @IsNotEmpty()
     password: string;

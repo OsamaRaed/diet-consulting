@@ -3,4 +3,5 @@ export enum ProvidersEnum {
     USER = 'UserModel',
     QUESTION = 'QuestionModel',
     ANSWER = 'AnswerModel',
+    VOTE = 'VoteModel',
 }

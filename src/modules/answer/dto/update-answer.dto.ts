@@ -1,5 +1,7 @@
 import {IsNotEmpty, IsOptional, IsString} from "class-validator";
 import {ApiProperty} from "@nestjs/swagger";
+import {trimmer} from "../../../common/utils";
+import {Transform} from "class-transformer";
 
 
 export class UpdateAnswerDto {
@@ -8,21 +10,25 @@ export class UpdateAnswerDto {
     @IsNotEmpty()
     @IsString()
     @IsOptional()
+    @Transform(trimmer)
     title?: string;
 
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
     @IsOptional()
+    @Transform(trimmer)
     description?: string;
 
     @IsNotEmpty()
     @IsString()
     @ApiProperty()
     @IsOptional()
-    recommendations?: string[];
+    @Transform(trimmer)
+    recommendations?: string;
 
     @ApiProperty()
     @IsOptional()
+    @Transform(trimmer)
     isDraft?: boolean;
 }

@@ -1,48 +1,42 @@
-import {IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength} from "class-validator";
-import {Transform, TransformFnParams} from "class-transformer";
+import {IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Matches, MinLength} from "class-validator";
+import {Transform} from "class-transformer";
 import {PASSWORD_PATTERN} from "../../../common/constants";
 import {MessagesEnum} from "../../../common/enums/messagesEnum";
 import {ApiProperty} from "@nestjs/swagger";
+import {trimmer} from "../../../common/utils";
+import {RolesEnum} from "../../../common/enums/rolesEnum";
 
 export class SignUpDto {
 
-    @Transform(({value}: TransformFnParams) =>
-        typeof value === 'string' ? value.trim() : value,
-    )
+    @Transform(trimmer)
     @IsNotEmpty()
     @IsString()
     @ApiProperty()
-    userName: string;
+    username: string;
 
-    @Transform(({value}: TransformFnParams) =>
-        typeof value === 'string' ? value.trim() : value,
-    )
+    @Transform(trimmer)
+
     @IsNotEmpty()
     @ApiProperty()
     @IsString()
     firstName: string;
 
-    @Transform(({value}: TransformFnParams) =>
-        typeof value === 'string' ? value.trim() : value,
-    )
+    @Transform(trimmer)
+
     @IsString()
     @IsOptional()
     @IsNotEmpty()
     @ApiProperty()
     middleName?: string;
 
-    @Transform(({value}: TransformFnParams) =>
-        typeof value === 'string' ? value.trim() : value,
-    )
+    @Transform(trimmer)
     @IsNotEmpty()
     @ApiProperty()
     @IsString()
     lastName: string;
 
 
-    @Transform(({value}: TransformFnParams) =>
-        typeof value === 'string' ? value.trim() : value,
-    )
+    @Transform(trimmer)
     @ApiProperty()
     @IsNotEmpty()
     @IsEmail()
@@ -53,6 +47,17 @@ export class SignUpDto {
     @IsString()
     @IsNotEmpty()
     @MinLength(8)
+    @Transform(trimmer)
     @Matches(PASSWORD_PATTERN, {message: MessagesEnum.WEAK_PASSWORD})
     password: string;
+
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    @Transform(trimmer)
+    @IsEnum(RolesEnum, {
+        message: MessagesEnum.INVALID_ROLE
+    })
+    role: RolesEnum;
 }

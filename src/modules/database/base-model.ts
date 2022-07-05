@@ -9,18 +9,26 @@ export abstract class BaseModel extends Model {
     @Column({primaryKey: true, autoIncrement: true})
     id: number;
 
-    @Column({ type: DataType.DATE })
+
+    @Column({type: DataType.DATE})
+    createdAt: Date;
+
+    @Column({type: DataType.DATE})
+    updatedAt: Date;
+
+
+    @Column({type: DataType.DATE})
     deletedAt: string;
 
     @ForeignKey(() => User)
-    @Column({ type: DataType.INTEGER })
+    @Column({type: DataType.INTEGER})
     createdBy: number;
 
     @ForeignKey(() => User)
-    @Column({ type: DataType.INTEGER })
+    @Column({type: DataType.INTEGER})
     updatedBy: number;
 
     @ForeignKey(() => User)
-    @Column({ type: DataType.INTEGER })
+    @Column({type: DataType.INTEGER})
     deletedBy: number;
 }

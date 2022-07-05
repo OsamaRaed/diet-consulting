@@ -1,18 +1,14 @@
-import {Inject, Injectable} from "@nestjs/common";
+import {Inject, Injectable, InternalServerErrorException} from "@nestjs/common";
 import {User} from "./user.model";
-import * as bcrypt from "bcrypt";
-import {sign} from "jsonwebtoken";
-import {compare} from "bcrypt";
 
 
 import {LoginDto} from "./dto/login.dto";
 import {SignUpDto} from "./dto/sign-up.dto";
 import {ProvidersEnum} from "../../common/enums/providersEnum";
-import {Op} from "sequelize";
+import {Op, Transaction} from "sequelize";
 import {InvalidCredentials, UserAlreadyExists, UserNotFound} from "../../common/utils/errors";
-import {ROLES} from "../../common/enums/roles";
-import {MessagesEnum} from "../../common/enums/messagesEnum";
 import {ConfigService} from "@nestjs/config";
+import {comparePassword, generateToken, hashPassword} from "../../common/utils";
 
 
 @Injectable()
@@ -23,68 +19,61 @@ export class UserService {
     ) {
     }
 
-    async findByUsernameOrEmail(username: string, email: string) {
+    async findByUsernameOrEmail(username: string, email: string) : Promise<User> {
         return await this.userModel.findOne({
             where: {
                 [Op.or]: [
-                    {username: username,},
+                    {username: username},
                     {email: email}
                 ]
             }
         })
     }
 
-    async signup(body: SignUpDto, role: ROLES) {
-        const user = await this.findByUsernameOrEmail(body.userName, body.email);
+    async signup(signUpDto: SignUpDto, transaction: Transaction) {
+        const user = await this.findByUsernameOrEmail(signUpDto.username, signUpDto.email);
         if (user) {
             throw UserAlreadyExists;
         }
-        const hash = await bcrypt.hash(body.password, 10);
-        await this.userModel.create({
-            email: body.email,
-            userName: body.userName,
-            firstName: body.firstName,
-            middleName: body.middleName,
-            lastName: body.lastName,
-            password: hash,
-            role: role
-        });
-        return {
-            message: MessagesEnum.USER_CREATED
-        };
+        signUpDto.password = await hashPassword(signUpDto.password);
+        try {
+            const newUser = await this.userModel.create({...signUpDto},{transaction});
+            return {
+                user: {
+                    id: newUser.id,
+                    username: newUser.username,
+                    email: newUser.email,
+                },
+                token: generateToken(newUser.id, this.configService.get("jwt").secret)
+            };
+        } catch (e) {
+            throw new InternalServerErrorException(e);
+        }
     }
 
-    async login(body: LoginDto) {
-        const user = await this.findByUsernameOrEmail(body.userName, body.email);
+    async login(loginDto: LoginDto) {
+
+        const user = await this.findByUsernameOrEmail(loginDto.usernameOrEmail, loginDto.usernameOrEmail);
         if (!user) {
             throw InvalidCredentials;
         }
-        const checkPass = await this.comparePassword(body.password, user.password)
+        const checkPass = await comparePassword(loginDto.password, user.password)
         if (!checkPass) {
             throw InvalidCredentials;
         }
         return {
-            access_token: sign(user.id, this.configService.get("jwt").secret)
+            access_token: generateToken(user.id, this.configService.get("jwt").secret)
         };
+
+
     }
 
     async findById(id: number): Promise<User> {
-        const user = await this.userModel.findOne({ where: { id: id } });
-        if(!user) {
+        const user = await this.userModel.findOne({where: {id: id}});
+        if (!user) {
             throw UserNotFound;
         }
         return user;
     }
 
-    async createUser(user: User): Promise<User> {
-        return await this.userModel.create({...user});
-    }
-
-    private comparePassword = (
-        password: string,
-        hash: string,
-    ): Promise<boolean> => {
-        return compare(password, hash);
-
-    };
 }

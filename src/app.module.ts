@@ -7,6 +7,7 @@ import {ConfigModule} from "@nestjs/config";
 import configFile from '../config';
 import {QuestionModule} from "./modules/question/question.module";
 import {AnswerModule} from "./modules/answer/answer.module";
+import { VoteModule } from './modules/vote/vote.module';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import {AnswerModule} from "./modules/answer/answer.module";
             load: [configFile],
             isGlobal: true,
         }),
+        VoteModule,
     ],
     controllers: [AppController],
     providers: [AppService],

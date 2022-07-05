@@ -1,9 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
-import { Observable } from "rxjs";
-import { verify } from "jsonwebtoken";
+import {Injectable, CanActivate, ExecutionContext} from "@nestjs/common";
 import {UserService} from "../../modules/user/user.service";
 import {ConfigService} from "@nestjs/config";
 import {Reflector} from "@nestjs/core";
+import {PUBLIC} from "../constants";
+import {verifyToken} from "../utils";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -13,40 +13,28 @@ export class AuthGuard implements CanActivate {
         private readonly configService: ConfigService
     ) {
     }
-    
-    canActivate(
+
+    async canActivate(
         context: ExecutionContext
-    ): boolean | Promise<boolean> | Observable<boolean> {
+    ): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
-        console.log('AuthGuard');
         const PublicRoute = this.reflector.get<string[]>(
-            'PublicRoute',
+            PUBLIC,
             context.getHandler(),
         );
 
         if (PublicRoute) {
-            console.log('public route: ' + PublicRoute);
             return true;
         }
-        console.log('public route: ' + PublicRoute);
-        return this.validateRequest(request);
-    }
-    
-    private async validateRequest(request: any): Promise<boolean> {
-
 
         let token = request.headers.authorization;
         if (!token) return false;
-
         token = token.split(" ")[1];
-
         try {
-            const data: any = verify(
-                token,
-                this.configService.get('jwt').secret
-            );
-            const test = await this.userService.findById(data);
-            request.user = test.toJSON();
+            const decoded = verifyToken(token, this.configService.get("jwt").secret);
+            const user = await this.userService.findById(decoded);
+            if (!user) return false;
+            request.user = user.toJSON();
             return true;
         } catch {
             return false;

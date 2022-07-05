@@ -4,6 +4,7 @@ import {Question} from "./question.model";
 import {CreateQuestionDto} from "./dto/create-question.dto";
 import {QuestionNotFound} from "../../common/utils/errors";
 import {UpdateQuestionDto} from "./dto/update-question.dto";
+import {Transaction} from "sequelize";
 
 
 @Injectable()
@@ -14,13 +15,13 @@ export class QuestionService {
     ) {
     }
 
-    async createQuestion(dto: CreateQuestionDto, userId: string) {
+    async createQuestion(dto: CreateQuestionDto, userId: string, transaction: Transaction) {
         return await this.questionModel.create({
             userId: userId,
             title: dto.title,
             description: dto.description,
             createdBy: userId,
-        })
+        }, {transaction});
     }
 
     async getOneQuestion(questionId: number) {
@@ -43,7 +44,7 @@ export class QuestionService {
         }
     }
 
-    async updateQuestion(questionId: string, updateQuestionDto: UpdateQuestionDto, userId: string): Promise<Question> {
+    async updateQuestion(questionId: string, updateQuestionDto: UpdateQuestionDto, userId: string,transaction: Transaction): Promise<Question> {
         const question = await this.questionModel.findOne({
             where: {
                 id: questionId,
@@ -53,7 +54,7 @@ export class QuestionService {
         if (!question) {
             throw QuestionNotFound;
         }
-        await question.update({...updateQuestionDto, updatedAt: new Date(), updatedBy: userId});
+        await question.update({...updateQuestionDto, updatedAt: new Date(), updatedBy: userId}, {transaction});
         return question
     }
 
@@ -67,7 +68,7 @@ export class QuestionService {
         if (!question) {
             throw QuestionNotFound;
         }
-        await question.update({isDeleted: true, updatedAt: new Date(), updatedBy: userId});
+        await question.update({deletedAt: new Date(), deletedBy: userId});
         return question
     }
 }

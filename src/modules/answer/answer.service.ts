@@ -1,10 +1,9 @@
 import {ProvidersEnum} from "../../common/enums/providersEnum";
-import {Inject, Injectable} from "@nestjs/common";
+import {Inject, Injectable, InternalServerErrorException} from "@nestjs/common";
 import {CreateAnswerDto} from "./dto/create-answer.dto";
-import {MessagesEnum} from "../../common/enums/messagesEnum";
-import {AnswerNotFound, DraftAlreadyExists, UnAuthorizedUser} from "../../common/utils/errors";
+import {AnswerNotFound, DraftAlreadyExists} from "../../common/utils/errors";
 import {Answer} from "./answer.model";
-import {Op} from "sequelize";
+import {Op, Transaction} from "sequelize";
 import {UpdateAnswerDto} from "./dto/update-answer.dto";
 
 
@@ -17,7 +16,9 @@ export class AnswerService {
     }
 
 
-    async createAnswer(createAnswerDto: CreateAnswerDto, userId: string): Promise<Answer> {
+    async createAnswer(createAnswerDto: CreateAnswerDto,
+                       userId: string,
+                       transaction: Transaction): Promise<Answer> {
         const answer = await this.answer.findOne(
             {
                 where: {
@@ -31,25 +32,25 @@ export class AnswerService {
         if (answer) {
             throw DraftAlreadyExists
         }
-        return await this.answer.create({
-            userId: userId,
-            questionId: createAnswerDto.questionId,
-            recommendations: createAnswerDto.recommendations,
-            title: createAnswerDto.title,
-            description: createAnswerDto.description,
-            createdBy: userId,
-            isDraft: true
-        })
+        try {
+            return await this.answer.create({...createAnswerDto, userId}, {transaction});
+        } catch (e) {
+            throw new InternalServerErrorException(e);
+        }
     }
 
 
-    async updateAnswer(id: string, updateAnswerDto: UpdateAnswerDto, userId: string) {
+    async updateAnswer(id: string, updateAnswerDto: UpdateAnswerDto, userId: string, transaction: Transaction) {
         const answer = await this.answer.findOne(
             {where: {id, userId}})
         if (!answer) {
             throw AnswerNotFound;
         }
-        await answer.update({...updateAnswerDto, updatedBy: userId});
+        if (!updateAnswerDto.isDraft && answer.isDraft) {
+            await answer.update({...updateAnswerDto, updatedBy: userId, answer, createdAt: new Date()}, {transaction});
+            return answer;
+        }
+        await answer.update({...updateAnswerDto, updatedBy: userId, answer}, {transaction});
         return answer
     }
 
@@ -69,6 +70,16 @@ export class AnswerService {
         if (!answer) {
             throw AnswerNotFound;
         }
-        return  answer
+        return answer
+    }
+
+    async verifyAnswer(id: string, transaction: Transaction) {
+        const answer = await this.answer.findOne(
+            {where: {id}})
+        if (!answer) {
+            throw AnswerNotFound;
+        }
+        await answer.update({verified: true}, {transaction});
+        return answer
     }
 }

@@ -5,7 +5,7 @@ import {Vote} from "./vote.model";
 import {Transaction} from "sequelize";
 
 @Injectable()
-export class VotesService {
+export class VoteService {
 
     constructor(
         @Inject(ProvidersEnum.VOTE) private readonly voteModel: typeof Vote,

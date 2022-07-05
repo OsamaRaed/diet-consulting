@@ -8,6 +8,8 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "migrate": "ts-node node_modules/.bin/sequelize db:migrate",
+    "migrate:undo": "ts-node node_modules/.bin/sequelize db:migrate:undo",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -21,9 +23,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/common": "^8.0.0",
-    "@nestjs/config": "^2.1.0",
-    "@nestjs/core": "^8.0.0",
+    "@nestjs/common": "^8.4.5",
+    "@nestjs/config": "^2.0.1",
+    "@nestjs/core": "^8.4.5",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/sequelize": "^8.0.1",
     "@nestjs/swagger": "^5.2.1",
@@ -35,12 +37,11 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
-    "sequelize": "^6.21.1",
+    "sequelize": "^6.17.0",
     "sequelize-typescript": "^2.1.3",
     "swagger-ui-express": "^4.4.0"
   },
   "devDependencies": {
-    "@faker-js/faker": "^7.3.0",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
@@ -56,12 +57,13 @@
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "28.0.3",
     "prettier": "^2.3.2",
+    "sequelize-cli": "^5.5.1",
     "source-map-support": "^0.5.20",
     "supertest": "^6.1.3",
     "ts-jest": "28.0.1",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
-    "tsconfig-paths": "4.0.0",
+    "tsconfig-paths": "^3.10.1",
     "typescript": "^4.3.5"
   },
   "jest": {

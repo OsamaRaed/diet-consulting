@@ -1,11 +1,17 @@
-import {BelongsTo, Column, DataType, ForeignKey, Model, Table} from "sequelize-typescript";
+import {BelongsTo, Column, DataType, DefaultScope, ForeignKey, Table} from "sequelize-typescript";
 import {User} from "../user/user.model";
 import {Question} from "../question/question.model";
+import {BaseModel} from "../database/base-model";
+import {DEFAULT_TIMESTAMP} from "../../common/constants";
 
+@DefaultScope({
+    attributes: {
+        exclude: ['deletedAt', 'deletedBy'],
+    },
+})
 
-
-@Table({tableName: "Answer", underscored: true})
-export class Answer extends Model {
+@Table({paranoid: true, tableName: "Answer", underscored: true})
+export class Answer extends BaseModel {
 
     @Column({type: DataType.STRING, allowNull: false})
     title: string;
@@ -13,10 +19,10 @@ export class Answer extends Model {
     @Column({type: DataType.STRING, allowNull: false})
     description: string;
 
-    @Column({type: DataType.JSON, allowNull: false})
-    recommendations: string[];
+    @Column({type: DataType.STRING, allowNull: false})
+    recommendations: string;
 
-    @Column({type: DataType.BOOLEAN, allowNull: false})
+    @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: true})
     isDraft: boolean;
 
     @Column({type: DataType.INTEGER, allowNull: false})
@@ -34,4 +40,13 @@ export class Answer extends Model {
 
     @BelongsTo(() => User)
     user: User;
+
+    @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: false})
+    verified: boolean;
+
+
+    @Column({type: DataType.DATE, defaultValue: DEFAULT_TIMESTAMP})
+    createdAt: Date;
+
+
 }

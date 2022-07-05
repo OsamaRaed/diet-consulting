@@ -1,8 +1,14 @@
-import {Table, Column, DataType} from "sequelize-typescript";
+import {Table, Column, DataType, DefaultScope} from "sequelize-typescript";
 import {BaseModel} from "../database/base-model";
-import {ROLES} from "../../common/enums/roles";
+import {RolesEnum} from "../../common/enums/rolesEnum";
 
-@Table({tableName: "User", underscored: true})
+@DefaultScope({
+    attributes: {
+        exclude: ['deletedAt', 'deletedBy'],
+    },
+})
+
+@Table({paranoid:true, tableName: "User", underscored: true})
 export class User extends BaseModel {
 
 
@@ -24,6 +30,6 @@ export class User extends BaseModel {
     @Column({type: DataType.STRING, allowNull: false})
     password: string;
 
-    @Column({type: DataType.ENUM(ROLES.PATIENT, ROLES.CONSULTANT), allowNull: false})
+    @Column({type: DataType.ENUM(RolesEnum.PATIENT, RolesEnum.CONSULTANT), allowNull: false})
     role: string;
 }
