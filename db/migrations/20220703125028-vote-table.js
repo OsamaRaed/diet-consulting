@@ -8,36 +8,47 @@ module.exports = {
          * Example:
          * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
          */
-        await queryInterface.createTable('questions', {
+        await queryInterface.createTable('Vote', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
-                autoIncrement: true
+                autoIncrement: true,
             },
-            title: {
-                type: Sequelize.STRING,
+            vote: {
+                type: Sequelize.BOOLEAN,
                 allowNull: false,
             },
-            description: {
-                type: Sequelize.STRING,
-                allowNull: false,
-            },
-            userId: {
+            user_id: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 references: {
-                    model: 'users',
+                    model: 'User',
                     key: 'id',
-                },
+                }
             },
-            createdAt: {
+            answer_id: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'Answer',
+                    key: 'id',
+                }
+            },
+            created_at: {
                 type: Sequelize.DATE,
                 defaultValue: Sequelize.fn('NOW'),
             },
-            updatedAt: {
+            updated_at: {
                 type: Sequelize.DATE,
                 defaultValue: Sequelize.fn('NOW'),
             },
+        }, {
+            uniqueKeys: {
+                vote_unique: {
+                    unique: true,
+                    fields: ['user_id', 'answer_id'],
+                }
+            }
         });
     },
 
@@ -48,7 +59,6 @@ module.exports = {
          * Example:
          * await queryInterface.dropTable('users');
          */
-        await queryInterface.dropTable('questions');
+        await queryInterface.dropTable('Favorite');
     }
-}
-;
+};

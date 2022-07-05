@@ -23,7 +23,7 @@ module.exports = {
                 allowNull: false,
             },
             recommendations: {
-                type: Sequelize.JSON,
+                type: Sequelize.STRING,
                 allowNull: false,
             },
             is_draft: {
@@ -35,7 +35,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 references: {
-                    model: 'questions',
+                    model: 'Question',
                     key: 'id',
                 },
             },
@@ -43,7 +43,7 @@ module.exports = {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 references: {
-                    model: 'users',
+                    model: 'User',
                     key: 'id',
                 }
             },
@@ -87,10 +87,7 @@ module.exports = {
             uniqueKeys: {
                 unique_draft: {
                     unique: true,
-                    fields: ['question_id', 'user_id', 'is_draft'],
-                    where: {
-                        isDraft: true,
-                    }
+                    fields: ['question_id', 'user_id', 'created_at'],
                 }
             }
         });
