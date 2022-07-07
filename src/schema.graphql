@@ -1,4 +1,13 @@
-type User {
+interface Node {
+    id: ID!
+}
+
+enum Role {
+    Patient
+    Consultant
+    Coordinator
+}
+type User implements Node{
   id: ID!
   userName: String!
   email: String!
@@ -6,12 +15,12 @@ type User {
   middleName: String
   lastName: String!
   password: String!
-  role: String!
+  role: Role!
 #  createdAt: DateTime
 #  updatedAt: DateTime
 }
 
-type Question {
+type Question implements Node{
     id: ID!
     title: String!
     description: String!
@@ -21,7 +30,7 @@ type Question {
 #    updatedAt: DateTime
 }
 
-type Answer {
+type Answer implements Node{
     id: ID!
     title: String!
     description: String!

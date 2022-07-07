@@ -5,11 +5,13 @@ import {SwaggerModule, DocumentBuilder} from '@nestjs/swagger';
 import {ConfigService} from "@nestjs/config";
 import {UserService} from "./modules/user/user.service";
 import {AuthGuard, RolesGuard} from "./common/guards";
+import {CustomLogger} from "./common/logger";
 
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-
+    const app = await NestFactory.create(AppModule, {
+        logger: new CustomLogger(),
+    });
     let userService = app.get(UserService);
     app.useGlobalGuards(
         new AuthGuard(userService, new Reflector(), app.get(ConfigService)),
